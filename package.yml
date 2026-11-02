@@ -1,0 +1,18 @@
+package: community.lazycat.app.phpmyadmin
+name: phpMyAdmin
+version: 0.0.0
+description: "Web interface for MySQL and MariaDB, bundled with a ready-to-use database server."
+min_os_version: "1.5.0"
+homepage: https://github.com/phpmyadmin/phpmyadmin
+author: phpMyAdmin
+license: GPL-2.0
+permissions:
+  required:
+    - net.internet
+locales:
+  zh:
+    name: phpMyAdmin
+    description: "数据库管理面板：网页里直接建库、建表、跑 SQL、导入导出数据，自带一个可用的 MySQL 实例。"
+  en:
+    name: phpMyAdmin
+    description: "Web interface for MySQL and MariaDB, bundled with a ready-to-use database server."

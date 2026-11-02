@@ -1,0 +1,12 @@
+params:
+  - id: root_password
+    type: secret
+    name: Database root password
+    description: "Password for the MySQL root account. Used both by the bundled database and by your phpMyAdmin login."
+    default_value: "$random(len=20)"
+    optional: false
+locales:
+  zh:
+    root_password:
+      name: 数据库 root 密码
+      description: MySQL root 账号的密码。既是内置数据库的口令，也是你登录 phpMyAdmin 用的口令。

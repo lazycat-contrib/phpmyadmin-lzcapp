@@ -1,0 +1,59 @@
+application:
+  subdomain: phpmyadmin
+  multi_instance: false
+  upstreams:
+    - location: /package-licenses/
+      backend: file:///lzcapp/pkg/content/licenses/
+    - location: /
+      backend: http://phpmyadmin:80/
+
+services:
+  db:
+    image: docker.1ms.run/library/mariadb:10.11
+    environment:
+      - MARIADB_ROOT_PASSWORD={{ .U.root_password }}
+      - MARIADB_DATABASE=appdb
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mariadb-admin ping -h 127.0.0.1 -u root -p"$$MARIADB_ROOT_PASSWORD"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    binds:
+      - /lzcapp/var/db:/var/lib/mysql
+
+  phpmyadmin:
+    # upstream: library/phpmyadmin:5.2.3
+    image: docker.1ms.run/library/phpmyadmin:5.2.3
+    depends_on:
+      - db
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_ABSOLUTE_URI=https://{{ .S.AppDomain }}/
+      - UPLOAD_LIMIT=256M
+      - TZ=Asia/Shanghai
+    binds:
+      - /lzcapp/var/sessions:/sessions
+
+usage: |
+  phpMyAdmin 是数据库管理面板：网页里直接建库、建表、跑 SQL、导入导出数据。
+
+  使用方法：
+  1. 打开应用，用户名填 root，密码填你安装时设置的 root 密码。
+  2. 在左侧可以新建数据库、建表；顶部 SQL 标签页可以直接执行语句。
+  3. 选中数据库后用"导入"上传 .sql 文件，或用"导出"下载备份。
+
+  数据与安全：
+  - 数据库文件在 MariaDB（/lzcapp/var/db），会话数据在 /lzcapp/var/sessions。
+    卸载应用会一并删除，请用导出功能定期备份。
+  - root 密码由你在安装时设置，默认值是随机生成的，不存在内置弱口令。
+  - 本包额外提供了一个名为 appdb 的空数据库，可以直接使用或删掉。
+  - 应用经懒猫入口鉴权访问；请勿关闭入口鉴权，否则数据库将暴露。
+
+  说明：
+  - 本应用包含两个容器（phpMyAdmin + MariaDB），启动顺序由依赖关系保证。
+  - 上传限制已调到 256MB，方便导入较大的 SQL 文件。
+  - 未做真机验证：登录、建库建表、执行 SQL、导入导出以及重启后持久化均未在设备上实测。
