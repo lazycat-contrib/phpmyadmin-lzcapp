@@ -1,6 +1,6 @@
 package: community.lazycat.app.phpmyadmin
 name: phpMyAdmin
-version: 0.0.0
+version: 5.2.3
 description: "Web interface for MySQL and MariaDB, bundled with a ready-to-use database server."
 min_os_version: "1.5.0"
 homepage: https://github.com/phpmyadmin/phpmyadmin
